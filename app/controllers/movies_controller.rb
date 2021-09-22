@@ -7,15 +7,15 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    param = params[:sort]
+    @movies = sortFn(param)
   end
   
-  def sort
-    sort = params[:sort]
+  def sortFn(sort)
     if sort == 'title'
-      @movies = Movie.sort_by(&:title)
+      @movies = Movie.all.sort_by(&:title)
     elsif sort == 'release'
-      @movies = Movie.sort_by(&:release)
+      @movies = Movie.all.sort_by(&:release_date)
     else
       @movies = Movie.all
     end
