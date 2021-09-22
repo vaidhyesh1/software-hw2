@@ -7,22 +7,43 @@ class MoviesController < ApplicationController
   end
 
   def index
-    param = params[:sort]
-    @movies,@isClick = sortFn(param)
+    sortParams = params[:sort]
+    ratingParams = params[:ratings]
+    @all_ratings = ['G','PG','PG-13','R']
+    if ratingParams != nil
+    filteredMovies, @chosenRatings = display_based_rating(ratingParams, Movie.all)
+    else
+    filteredMovies, @chosenRatings = Movie.all, @all_ratings
+    end
+    # movies is Movie.all now
+    @movies,@isClick = sortFn(sortParams, filteredMovies)
   end
   
-  def sortFn(sort)
+  def display_based_rating(ratings,movies)
+    ratingArr = Array.new
+    if ratings != nil
+      ratings.each do |key, value|
+        ratingArr.append(key)
+      end
+    end
+    if ratingArr.length() == 0
+      return movies,ratingArr
+    end
+    return movies.where(:rating=>ratingArr) , ratingArr
+  end  
+  
+  def sortFn(sort,movies)
     if sort == 'title'
-      movies = Movie.all.sort_by(&:title)
+      sortedMovies = movies.sort_by(&:title)
       isClick = 'title'
     elsif sort == 'release'
-      movies = Movie.all.sort_by(&:release_date)
+      sortedMovies = movies.sort_by(&:release_date)
       isClick = 'release'
     else
-      movies = Movie.all
+      sortedMovies = movies
       isClick = 'none'
     end
-    return movies,isClick
+    return sortedMovies,isClick
   end
 
   def new
