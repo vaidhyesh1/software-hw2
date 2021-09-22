@@ -8,17 +8,21 @@ class MoviesController < ApplicationController
 
   def index
     param = params[:sort]
-    @movies = sortFn(param)
+    @movies,@isClick = sortFn(param)
   end
   
   def sortFn(sort)
     if sort == 'title'
-      @movies = Movie.all.sort_by(&:title)
+      movies = Movie.all.sort_by(&:title)
+      isClick = 'title'
     elsif sort == 'release'
-      @movies = Movie.all.sort_by(&:release_date)
+      movies = Movie.all.sort_by(&:release_date)
+      isClick = 'release'
     else
-      @movies = Movie.all
+      movies = Movie.all
+      isClick = 'none'
     end
+    return movies,isClick
   end
 
   def new

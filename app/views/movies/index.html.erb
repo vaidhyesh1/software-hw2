@@ -6,9 +6,9 @@
 <table class="table table-striped col-md-12" id="movies">
   <thead>
     <tr>
-      <th id="title_header"><a class="hilite text-warning" href="/?sort=title">Movie Title</a></th>
+      <th id="title_header"><a class="<%= @isClick == 'title' ? 'text-warning' : 'hilite'  %>" href="/?sort=title">Movie Title</a></th>
       <th>Rating</th>
-      <th  id="release_date_header"><a class="hilite text-warning" href="/?sort=release">Release Date</a></th>
+      <th  id="release_date_header"><a class="<%= @isClick == 'release' ? 'text-warning' : 'hilite' %>" href="/?sort=release">Release Date</a></th>
       <th>More Info</th>
     </tr>
   </thead>
