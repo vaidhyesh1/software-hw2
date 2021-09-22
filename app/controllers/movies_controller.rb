@@ -11,11 +11,20 @@ class MoviesController < ApplicationController
     ratingParams = params[:ratings]
     @all_ratings = ['G','PG','PG-13','R']
     if ratingParams != nil
-    filteredMovies, @chosenRatings = display_based_rating(ratingParams, Movie.all)
+      filteredMovies, @chosenRatings = display_based_rating(ratingParams, Movie.all)
+      session[:chosenRatings] = @chosenRatings
     else
-    filteredMovies, @chosenRatings = Movie.all, @all_ratings
+      if session[:chosenRatings] != nil
+        ratingParams = session[:chosenRatings]
+        filteredMovies, @chosenRatings = display_based_rating(ratingParams, Movie.all)
+      else
+        filteredMovies, @chosenRatings = Movie.all, @all_ratings
+      end
     end
     # movies is Movie.all now
+    if sortParams == nil
+      sortParams = session[:sort]
+    end
     @movies,@isClick = sortFn(sortParams, filteredMovies)
   end
   
@@ -35,9 +44,11 @@ class MoviesController < ApplicationController
   def sortFn(sort,movies)
     if sort == 'title'
       sortedMovies = movies.sort_by(&:title)
+      session[:sort] = 'title'
       isClick = 'title'
     elsif sort == 'release'
       sortedMovies = movies.sort_by(&:release_date)
+      session[:sort] = 'release'
       isClick = 'release'
     else
       sortedMovies = movies
